@@ -9,13 +9,16 @@ import cv2
 class DataToTensor(ABCMeta):
     @abstractmethod
     def __call__(cls, data: any) -> torch.Tensor:
-        raise NotImplementedError('The method is not implemented')
+        pass
 
 
 class NPArrayToTensor(DataToTensor):
     def __call__(cls, data: np.array) -> torch.Tensor:
         if not data:
             raise ValueError('No data array to convert to tensor')
+            
+        if not isinstance(data, np.array):
+            raise ValueError('The data you are passing is not a numpy array')
             
         if len(data.shape) != 4:
             raise ValueError('The size of the array you are trying to convert is incorrect: {}, instead of 4'.format(data.shape))
@@ -34,6 +37,12 @@ class ImageArrayGetter(ABCMeta):
 
 class CV2CamImageArrayGetter(ImageArrayGetter):
     def __init__(cls, resizer: callable, camera: any):
+        if not resizer:
+            raise ValueError('The resizer cannot be empty')
+            
+        if not camera:
+            raise ValueError('The camera cannot be empty')
+            
         super().__init__(camera, resizer)
         cls._camera = camera
         cls._resizer = resizer
@@ -49,6 +58,9 @@ class CV2CamImageArrayGetter(ImageArrayGetter):
 
 class FileImageArrayGetter(ImageArrayGetter):
     def __init__(cls, resizer: callable):
+        if not resizer:
+            raise ValueError('The resizer cannot be empty')
+
         super().__init__(resizer)
         cls._resizer = resizer
 
