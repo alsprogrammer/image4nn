@@ -12,7 +12,7 @@ class RaspiCamImageArrayGetter(ImageArrayGetter):
         sleep(0.1)
 
     def __call__(cls) -> np.array:
-        cls._camera.capture(rawCapture, format="bgr")
+        cls._camera.capture(cls._rawCapture, format="bgr")
         image = rawCapture.array
 
         return image
